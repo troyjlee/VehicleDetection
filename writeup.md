@@ -8,13 +8,13 @@ A nice solution is to treat detection as region proposal + classification.  This
 
 This approach breaks our pipeline down into roughly three steps. 
 
-###1) Train a classifier to identify car versus non-car.
+### 1) Train a classifier to identify car versus non-car.
 For this step we will use data from the GTI vehicle image database and the KITTI vision benchmark suite to train a classifier to identify cars.  We will experiment with many different feature sets and classifiers to determine what works best
 
-###2) Identify regions where a car might be located. 
+### 2) Identify regions where a car might be located. 
 We use the most naive algorithm for this step.  We simply check all possible locations by sliding a window accross the image. 
 
-###3) Integrate the positive identifications
+### 3) Integrate the positive identifications
 After we run the classifier on each sliding window, we then need to aggregate this information to throw out likely false positives and generate bounding boxes around the cars.
 
 *Note about code:* Some of our exploratory data analysis and pipeline experimentation can be found in the jupyter notebook `data_exploration.ipynb` (an html version is also included).  After playing around in the jupyter notebook, we finalized the code in python scripts.  The code related to training the classifier can be found in the files `make_dataset.py`, `make_testset.py`, `classifier.py`.  The code for detecting cars from a video stream is in the file `pipeline.py`.
@@ -33,7 +33,7 @@ And 4 random non-car examples.
 
 Udacity suggested using 3 types of features: histogram of oriented gradients, histogram of colors, and actual pixel values of a downsampled image.  We will look at these different features on these examples to see what distinguishes cars from non-cars.
 
-###Histogram of Oriented Gradients (HOG)
+### Histogram of Oriented Gradients (HOG)
 
 *Grayscale*: We first looked at taking the histogram of gradients on a grayscale image.  We did this as follows:
 
@@ -71,10 +71,10 @@ And for the non-car examples.
 
 Both the L and the S channels look like they would do well to distinguish cars from non-cars.
 
-###Downsampled image
+### Downsampled image
 Another feature we will use is the actual pixel values of a downsampled image.  Including this feature improved the accuracy of our linear SVM classifier.  We found that a 32-by-32 size image worked the best.
 
-###Color Histogram
+### Color Histogram
 Cars also have a greater variety of colors than the surrounding road features.  To take advantage of this in our classifier, we also included color features in the form of a histogram of the R,G,B pixel intensities.  In code, this looks as follows for an image in the BGR colorspace:
 
 ```
@@ -167,7 +167,7 @@ def make_colorhist(channel):
 After deciding on our feature and classifier parameters, we rolled our homegrown test set into the training set and retrained the classifier using some of the actual images from the project video.  
 
 
-##Region Proposal
+## Region Proposal
 The code in this section is found in our main file `pipeline.py`.
 
 We used the most naive form of region proposal, to slide a window across all regions of the image where a car might be found.  We first cropped the image to remove the sky and the hood of the car, and to remove the left half of the image with cars from the oncoming lane.
@@ -311,7 +311,7 @@ The final result of this process can be found in the video `annotated.mp4`.
 
 ---
 
-###Discussion
+### Discussion
 
 A huge problem in this project was the prevalence of false positives.  Even though our classifier achieved 98% accuracy on the test set, it only achieved 93% accuracy on data taken from the actual video images.  This shows the importance of having a training set that is similiar to the set of images that will be used in actual deployment.  I think that the actual video images have more side views of cars and because of the random nature of the sliding windows have views of cars cropped at odd angles.
 
